@@ -1,11 +1,474 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <meta
+      name="description"
+      content="Sistema bibliotecário UniCuritiba para monitoramento administrativo do acervo."
+    />
+    <title>Sistema Bibliotecário UniCuritiba</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css?v=students-admin-20260606" />
   </head>
   <body>
-    <h1>Aguardando o Jão... esse safado</h1>
+    <main class="login-screen" id="loginScreen">
+      <section class="login-shell" aria-label="Acesso interno">
+        <div class="login-form-panel">
+          <a class="login-logo" href="#login" aria-label="UniCuritiba Sistema Bibliotecário">
+            <img src="./assets/logo-unicuritiba.svg" alt="UniCuritiba" />
+            <span>Sistema Bibliotecário</span>
+          </a>
+
+          <div class="login-heading">
+            <span class="eyebrow">Acesso interno</span>
+            <h1>Sistema Bibliotecário</h1>
+            <p>Painel administrativo para acesso ao monitoramento interno da biblioteca.</p>
+          </div>
+
+          <form id="loginForm" class="stack-form">
+            <label>
+              <span>E-mail institucional</span>
+              <div class="login-domain-field">
+                <input
+                  name="email"
+                  type="text"
+                  placeholder="Digite sua credencial"
+                  autocomplete="username"
+                  required
+                />
+                <strong>@ulife.com.br</strong>
+              </div>
+            </label>
+
+            <label>
+              <span>Senha</span>
+              <div class="password-field">
+                <input
+                  id="passwordInput"
+                  name="password"
+                  type="password"
+                  placeholder="Digite sua senha"
+                  autocomplete="current-password"
+                  required
+                />
+                <button
+                  class="icon-button"
+                  type="button"
+                  id="togglePasswordButton"
+                  aria-label="Mostrar senha"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <path d="M12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z" />
+                  </svg>
+                </button>
+              </div>
+            </label>
+
+            <p class="login-error" id="loginError" hidden>Login ou senha inválidos.</p>
+
+            <button class="primary-button full login-submit" type="submit" id="loginSubmitButton">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 11V8a5 5 0 0 1 10 0v3" />
+                <path d="M6 11h12v10H6z" />
+              </svg>
+              <span id="loginSubmitText">Entrar no sistema</span>
+            </button>
+          </form>
+
+          <div class="login-footnote">
+            <span class="footnote-icon" aria-hidden="true"></span>
+            <span>Acesso restrito a bibliotecários e administradores autorizados.</span>
+          </div>
+        </div>
+
+        <div class="login-image-panel" aria-label="Campus UniCuritiba">
+          <img src="./assets/unicuritiba-campus.jpg" alt="Fachada do campus UniCuritiba" />
+        </div>
+      </section>
+    </main>
+
+    <div class="app-shell is-hidden" id="appShell">
+      <header class="app-topbar">
+        <a class="brand" href="#home" aria-label="Sistema Bibliotecário UniCuritiba">
+          <img class="brand-logo" src="./assets/logo-unicuritiba.svg" alt="UniCuritiba" />
+          <span>Sistema Bibliotecário</span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navegação principal">
+          <a class="nav-link" href="#home" data-menu-link>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M3.5 9.2 10 4l6.5 5.2v6.9a.9.9 0 0 1-.9.9h-3.3v-4.7H7.7V17H4.4a.9.9 0 0 1-.9-.9V9.2Z" />
+            </svg>
+            <span>Início</span>
+          </a>
+
+          <a class="nav-link" href="#alunos" data-menu-link>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M7.5 9.2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+              <path d="M2.5 17a5 5 0 0 1 10 0" />
+              <path d="M14 6.5h3.5" />
+              <path d="M14 10h3.5" />
+              <path d="M14 13.5h3.5" />
+            </svg>
+            <span>Alunos</span>
+          </a>
+
+          <div class="nav-dropdown">
+            <button
+              class="nav-link nav-dropdown-button"
+              type="button"
+              id="registrationMenuButton"
+              aria-expanded="false"
+              aria-controls="registrationMenu"
+            >
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M5 4h7.5A2.5 2.5 0 0 1 15 6.5V17H6.2A2.2 2.2 0 0 1 4 14.8V5a1 1 0 0 1 1-1Z" />
+                <path d="M7 8h5" />
+                <path d="M7 11h4" />
+              </svg>
+              <span>Cadastro</span>
+              <svg class="chevron" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M5.5 7.5 10 12l4.5-4.5" />
+              </svg>
+            </button>
+
+            <div class="nav-submenu" id="registrationMenu">
+              <a href="#cadastro-aluno" data-menu-link>Cadastrar aluno</a>
+              <a href="#cadastro-livro" data-menu-link>Cadastrar livro</a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="top-actions">
+          <button
+            class="admin-pill"
+            type="button"
+            id="userMenuButton"
+            aria-expanded="false"
+            aria-controls="userMenu"
+          >
+            <span>U</span>
+            <strong>ADM</strong>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M5.5 7.5 10 12l4.5-4.5" />
+            </svg>
+          </button>
+
+          <div class="user-menu" id="userMenu" hidden>
+            <a href="#home" data-menu-link>Painel inicial</a>
+            <button class="logout-menu-button" type="button" id="logoutButton">Sair</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="app-view" id="homeView" data-view="home">
+          <section class="dashboard-hero">
+            <div>
+              <span class="eyebrow">Monitoramento administrativo</span>
+              <h1>Controle do acervo</h1>
+              <p>Consulte a disponibilidade, os empréstimos ativos e as pendências da biblioteca.</p>
+            </div>
+            <div class="hero-status">
+              <span id="todayLabel">Hoje</span>
+              <strong>UniCuritiba</strong>
+            </div>
+          </section>
+
+          <section class="metrics-band" aria-label="Indicadores do acervo">
+            <button class="metric-tile" type="button" data-card-action="catalog">
+              <span class="metric-icon" aria-hidden="true">
+                <svg viewBox="0 0 448 512">
+                  <path d="M96 0C43 0 0 43 0 96v320c0 53 43 96 96 96h320c17.7 0 32-14.3 32-32s-14.3-32-32-32H96c-17.7 0-32-14.3-32-32s14.3-32 32-32h288c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H96Z" />
+                </svg>
+              </span>
+              <div>
+                <span>Quantidade de livros</span>
+                <strong id="metricTotalBooks">0</strong>
+                <small>Total do acervo</small>
+              </div>
+            </button>
+
+            <button class="metric-tile" type="button" data-card-action="rented">
+              <span class="metric-icon" aria-hidden="true">
+                <svg viewBox="0 0 512 512">
+                  <path d="M64 48c0-26.5 21.5-48 48-48h224c26.5 0 48 21.5 48 48v32h16c44.2 0 80 35.8 80 80v288c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V160c0-44.2 35.8-80 80-80h16V48Zm80 32h192V48H144v32Zm88 108v64h-64c-13.3 0-24 10.7-24 24v40c0 13.3 10.7 24 24 24h64v64c0 13.3 10.7 24 24 24h40c13.3 0 24-10.7 24-24v-64h64c13.3 0 24-10.7 24-24v-40c0-13.3-10.7-24-24-24h-64v-64c0-13.3-10.7-24-24-24h-40c-13.3 0-24 10.7-24 24Z" />
+                </svg>
+              </span>
+              <div>
+                <span>Livros alugados</span>
+                <strong id="metricRentedBooks">0</strong>
+                <small>Ordenar por mais alugados</small>
+              </div>
+            </button>
+
+            <button class="metric-tile" type="button" data-card-action="stock">
+              <span class="metric-icon" aria-hidden="true">
+                <svg viewBox="0 0 576 512">
+                  <path d="M264.5 5.2a64 64 0 0 1 47 0l218.6 101c10.2 4.7 16.4 15 15.9 26.2-.5 11.1-7.4 21.4-17.8 25.4L311.5 243a64 64 0 0 1-46.1 0L47.8 157.8c-10.4-4-17.3-14.3-17.8-25.4-.5-11.2 6.3-21.5 16-26.2L264.5 5.2Zm214 204.4 51.3 23.7c10.4 4.8 17.2 15.2 16.7 26.7-.6 11.5-7.7 21.2-18.4 25.4L311.5 371a64 64 0 0 1-46.1 0L47.8 285.5c-10.7-4.2-17.8-13.9-18.4-25.4-.5-11.5 6.3-21.9 16.7-26.7l51.3-23.7 146.8 57.6a128 128 0 0 0 93.5 0l146.8-57.7Z" />
+                </svg>
+              </span>
+              <div>
+                <span>Em estoque</span>
+                <strong id="metricStockBooks">0</strong>
+                <small>Disponíveis para empréstimo</small>
+              </div>
+            </button>
+
+            <button class="metric-tile balance-ok" type="button" id="debtMetricCard" data-card-action="debtors">
+              <span class="metric-icon" aria-hidden="true">
+                <svg viewBox="0 0 512 512">
+                  <path d="M64 32C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V192c0-35.3-28.7-64-64-64H80c-8.8 0-16-7.2-16-16s7.2-16 16-16h368c17.7 0 32-14.3 32-32s-14.3-32-32-32H64Zm352 256a32 32 0 1 1 0 64 32 32 0 1 1 0-64Z" />
+                </svg>
+              </span>
+              <div>
+                <span>Alunos com saldo devedor</span>
+                <strong id="metricDebtors">0</strong>
+                <small id="metricDebtorsHint">Nenhuma pendência</small>
+              </div>
+            </button>
+          </section>
+
+          <section class="content-section catalog-section" id="catalogSection">
+            <div class="section-heading catalog-heading">
+              <div>
+                <span class="eyebrow">Acervo</span>
+                <h2>Catálogo de livros</h2>
+                <p class="section-subtitle" id="catalogSummary">Carregando acervo...</p>
+              </div>
+            </div>
+
+            <div class="filters-panel catalog-tools">
+              <label class="search-control">
+                <span class="sr-only">Busca</span>
+                <input id="searchInput" type="search" placeholder="Título, autor, gênero..." />
+              </label>
+              <label>
+                <span class="sr-only">Gênero</span>
+                <select id="genreFilter">
+                  <option value="">Todos os gêneros</option>
+                </select>
+              </label>
+              <label>
+                <span class="sr-only">Status</span>
+                <select id="availabilityFilter">
+                  <option value="">Todos os status</option>
+                  <option value="available">Em estoque</option>
+                  <option value="unavailable">Sem estoque</option>
+                  <option value="rented">Com empréstimos</option>
+                </select>
+              </label>
+              <label>
+                <span class="sr-only">Ordenar</span>
+                <select id="sortFilter">
+                  <option value="title">Ordenar por Título</option>
+                  <option value="stock">Ordenar por Estoque</option>
+                  <option value="rented">Ordenar por Mais Alugados</option>
+                  <option value="year">Ordenar por Ano</option>
+                </select>
+              </label>
+              <button class="ghost-button filter-clear" id="clearFiltersButton" type="button">
+                Limpar
+              </button>
+            </div>
+
+            <div class="catalog-grid" id="catalogGrid"></div>
+            <p class="empty-state" id="catalogEmpty" hidden>Nenhum livro encontrado.</p>
+            <div class="pagination" id="catalogPagination" aria-label="Paginação do catálogo"></div>
+          </section>
+        </section>
+
+        <section class="app-view is-hidden" id="bookView" data-view="book">
+          <div class="content-section">
+            <a class="back-link" href="#home">Voltar ao início</a>
+            <div id="bookDetailContent"></div>
+          </div>
+        </section>
+
+        <section class="app-view is-hidden" id="studentCreateView" data-view="cadastro-aluno">
+          <div class="content-section form-page">
+            <div class="page-heading">
+              <span class="eyebrow">Cadastro</span>
+              <h1 id="studentFormTitle">Cadastrar aluno</h1>
+              <p id="studentFormSubtitle">Registre os dados do aluno para liberar operações no acervo.</p>
+            </div>
+
+            <form class="form-card" id="studentForm">
+              <input type="hidden" name="id" />
+              <label>
+                <span>Nome completo</span>
+                <input name="nome" type="text" placeholder="Ex.: Maria Eduarda Silva" required />
+              </label>
+              <div class="form-row">
+                <label>
+                  <span>E-mail</span>
+                  <input name="email" type="email" placeholder="maria@ulife.com.br" required />
+                </label>
+                <label>
+                  <span>CPF</span>
+                  <input name="CPF" type="text" placeholder="000.000.000-00" required />
+                </label>
+              </div>
+              <div class="form-row">
+                <label>
+                  <span>Telefone</span>
+                  <input name="telefone" type="tel" placeholder="(41) 99999-9999" />
+                </label>
+              </div>
+              <div class="form-actions">
+                <button class="primary-button" type="submit" id="studentSubmitButton">Cadastrar aluno</button>
+                <button class="ghost-button" type="button" id="clearStudentForm">Limpar</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="app-view is-hidden" id="studentsView" data-view="alunos">
+          <div class="content-section debt-page">
+            <div class="section-heading catalog-heading">
+              <div>
+                <span class="eyebrow">Administração</span>
+                <h1>Alunos</h1>
+                <p class="section-subtitle" id="studentsSummary">Carregando alunos...</p>
+              </div>
+            </div>
+
+            <div class="filters-panel students-tools">
+              <label class="search-control">
+                <span class="sr-only">Pesquisar aluno</span>
+                <input id="studentSearchInput" type="search" placeholder="Pesquisar por nome, CPF, e-mail ou telefone" />
+              </label>
+              <label>
+                <span class="sr-only">Ordenar alunos</span>
+                <select id="studentSortFilter">
+                  <option value="az">Ordenar de A-Z</option>
+                  <option value="za">Ordenar de Z-A</option>
+                  <option value="balance">Ordenar por saldo</option>
+                </select>
+              </label>
+              <button class="ghost-button filter-clear" id="clearStudentFiltersButton" type="button">
+                Limpar
+              </button>
+            </div>
+
+            <div class="table-card" id="studentsTableWrap"></div>
+          </div>
+        </section>
+
+        <section class="app-view is-hidden" id="bookCreateView" data-view="cadastro-livro">
+          <div class="content-section form-page">
+            <div class="page-heading">
+              <span class="eyebrow">Cadastro</span>
+              <h1>Cadastrar livro</h1>
+              <p>Cadastre ou edite livros do acervo.</p>
+            </div>
+
+            <form class="form-card" id="bookForm">
+              <input type="hidden" name="id" />
+              <label>
+                <span>Título</span>
+                <input name="titulo" type="text" placeholder="Nome do livro" required />
+              </label>
+              <label>
+                <span>Autor</span>
+                <input name="autor" type="text" placeholder="Autor principal" required />
+              </label>
+              <div class="form-row">
+                <label>
+                  <span>Editora</span>
+                  <input name="editora" type="text" placeholder="Editora" />
+                </label>
+                <label>
+                  <span>Gênero</span>
+                  <input name="genero" type="text" list="genreOptions" placeholder="Tecnologia" />
+                  <datalist id="genreOptions"></datalist>
+                </label>
+              </div>
+              <div class="form-row">
+                <label>
+                  <span>Quantidade</span>
+                  <input name="quantidade" type="number" min="0" value="1" required />
+                </label>
+                <label>
+                  <span>Ano</span>
+                  <input name="anoPublicacao" type="number" min="0" placeholder="2024" />
+                </label>
+              </div>
+              <div class="form-actions">
+                <button class="primary-button" type="submit" id="bookSubmitButton">Salvar livro</button>
+                <button class="ghost-button" type="button" id="clearBookForm">Limpar</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="app-view is-hidden" id="debtorsView" data-view="atrasos">
+          <div class="content-section debt-page">
+            <a class="back-link" href="#home">Voltar ao início</a>
+            <div class="page-heading">
+              <span class="eyebrow">Pendências</span>
+              <h1>Alunos com saldo devedor</h1>
+              <p>Empréstimos ativos com devolução prevista vencida.</p>
+            </div>
+            <div class="table-card" id="debtorsTableWrap"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="loading-screen is-hidden" id="loadingScreen" role="status" aria-live="polite">
+      <img src="./assets/logo-unicuritiba.svg" alt="UniCuritiba" />
+      <span class="loading-spinner" aria-hidden="true"></span>
+      <strong>Carregando...</strong>
+    </div>
+
+    <div class="modal-backdrop is-hidden" id="confirmModal" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <span class="eyebrow">Confirmação</span>
+        <h2>Anular multa?</h2>
+        <p id="confirmModalText">
+          Confirme se o livro foi devolvido. A pendência será encerrada no sistema.
+        </p>
+        <div class="modal-actions">
+          <button class="ghost-button" type="button" id="cancelModalButton">Cancelar</button>
+          <button class="primary-button danger" type="button" id="confirmReturnButton">
+            Confirmar devolução
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop is-hidden" id="deleteBookModal" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <span class="eyebrow">Exclusão</span>
+        <h2>Excluir livro?</h2>
+        <p id="deleteBookModalText">
+          Tem certeza que deseja excluir este livro do acervo?
+        </p>
+        <div class="modal-actions">
+          <button class="ghost-button" type="button" id="cancelDeleteBookButton">Não</button>
+          <button class="primary-button danger" type="button" id="confirmDeleteBookButton">Sim</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop is-hidden" id="deleteUserModal" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <span class="eyebrow">Exclusão</span>
+        <h2>Excluir aluno?</h2>
+        <p id="deleteUserModalText">
+          Tem certeza que deseja excluir este aluno do sistema?
+        </p>
+        <div class="modal-actions">
+          <button class="ghost-button" type="button" id="cancelDeleteUserButton">Não</button>
+          <button class="primary-button danger" type="button" id="confirmDeleteUserButton">Sim</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js?v=students-admin-20260606"></script>
   </body>
 </html>

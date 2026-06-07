@@ -90,8 +90,10 @@ public class JsonUtil {
                 .append("\"usuarioId\":").append(emprestimo.getUsuarioId()).append(",")
                 .append("\"livroId\":").append(emprestimo.getLivroId()).append(",")
                 .append("\"dataEmprestimo\":").append(data(emprestimo.getDataEmprestimo())).append(",")
+                .append("\"dataPrevistaDevolucao\":").append(data(emprestimo.getDataPrevistaDevolucao())).append(",")
                 .append("\"dataDevolucao\":").append(data(emprestimo.getDataDevolucao())).append(",")
-                .append("\"status\":").append(texto(emprestimo.getStatus()))
+                .append("\"status\":").append(texto(emprestimo.getStatus())).append(",")
+                .append("\"multa\":").append(emprestimo.getMulta())
                 .append("}");
 
             if (i < emprestimos.size() - 1) {

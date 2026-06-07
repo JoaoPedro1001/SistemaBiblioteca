@@ -4,7 +4,7 @@ CREATE TABLE public.usuarios (
   email character varying NOT NULL UNIQUE CHECK (btrim(email::text) <> ''::text),
   telefone character varying,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
-  cpf character varying NOT NULL UNIQUE CHECK (length(regexp_replace(cpf::text, '\\D'::text, ''::text, 'g'::text)) = 11 AND regexp_replace(cpf::text, '\\D'::text, ''::text, 'g'::text) ~ '^\\d{11}$'::text),
+  cpf character varying NOT NULL UNIQUE CHECK (length(regexp_replace(cpf::text, '[^0-9]'::text, ''::text, 'g'::text)) = 11 AND regexp_replace(cpf::text, '[^0-9]'::text, ''::text, 'g'::text) ~ '^[0-9]{11}$'::text),
   CONSTRAINT usuarios_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.livros (
@@ -33,7 +33,7 @@ CREATE TABLE public.emprestimos (
   CONSTRAINT emprestimos_livro_fk FOREIGN KEY (livro_id) REFERENCES public.livros(id)
 );
 CREATE TABLE public.admins (
-  id bigint NOT NULL DEFAULT nextval('admins_id_seq'::regclass),
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   username text NOT NULL UNIQUE,
   password text NOT NULL,
   created_at timestamp with time zone NOT NULL DEFAULT now(),

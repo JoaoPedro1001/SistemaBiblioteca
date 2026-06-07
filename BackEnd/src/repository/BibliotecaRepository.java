@@ -22,6 +22,12 @@ public interface BibliotecaRepository {
 
     List<Usuario> listarUsuarios() throws SQLException;
 
+    void atualizarUsuario(long id, Usuario usuario) throws SQLException;
+
+    void excluirUsuario(long id) throws SQLException;
+
+    boolean autenticarAdministrador(String username, String password) throws SQLException;
+
     void registrarEmprestimo(long usuarioId, long livroId) throws SQLException;
 
     void registrarDevolucao(long emprestimoId) throws SQLException;
