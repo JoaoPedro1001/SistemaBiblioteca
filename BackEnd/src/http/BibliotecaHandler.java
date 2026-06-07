@@ -30,6 +30,20 @@ public class BibliotecaHandler implements HttpHandler {
             String metodo = exchange.getRequestMethod();
             String caminho = exchange.getRequestURI().getPath().replace("/api", "");
 
+            if (metodo.equals("POST") && caminho.equals("/admins/login")) {
+                String body = lerBody(exchange);
+                String username = lerPrimeiroTexto(body, "login", "username", "email");
+                String password = lerPrimeiroTexto(body, "password", "senha");
+
+                if (!service.autenticarAdministrador(username, password)) {
+                    responder(exchange, 401, "{\"erro\":\"Login ou senha invalidos\"}");
+                    return;
+                }
+
+                responder(exchange, 200, "{\"username\":\"" + escaparJson(username) + "\"}");
+                return;
+            }
+
             if (metodo.equals("GET") && caminho.equals("/livros")) {
                 responder(exchange, 200, JsonUtil.livrosParaJson(service.listarLivros()));
                 return;
@@ -76,6 +90,21 @@ public class BibliotecaHandler implements HttpHandler {
                 return;
             }
 
+            if (metodo.equals("PUT") && caminho.matches("/usuarios/\\d+")) {
+                long id = pegarId(caminho);
+                Usuario usuario = JsonUtil.jsonParaUsuario(lerBody(exchange));
+                service.atualizarUsuario(id, usuario);
+                responder(exchange, 200, "{\"mensagem\":\"Usuario atualizado com sucesso\"}");
+                return;
+            }
+
+            if (metodo.equals("DELETE") && caminho.matches("/usuarios/\\d+")) {
+                long id = pegarId(caminho);
+                service.excluirUsuario(id);
+                responder(exchange, 200, "{\"mensagem\":\"Usuario excluido com sucesso\"}");
+                return;
+            }
+
             if (metodo.equals("GET") && caminho.equals("/emprestimos")) {
                 responder(exchange, 200, JsonUtil.emprestimosParaJson(service.listarHistorico()));
                 return;
@@ -118,6 +147,26 @@ public class BibliotecaHandler implements HttpHandler {
     private long pegarId(String caminho) {
         String[] partes = caminho.split("/");
         return Long.parseLong(partes[2]);
+    }
+
+    private String lerPrimeiroTexto(String json, String... campos) {
+        for (String campo : campos) {
+            String valor = JsonUtil.lerTexto(json, campo);
+
+            if (valor != null && !valor.isBlank()) {
+                return valor;
+            }
+        }
+
+        return null;
+    }
+
+    private String escaparJson(String valor) {
+        if (valor == null) {
+            return "";
+        }
+
+        return valor.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
     private void responder(HttpExchange exchange, int status, String resposta) throws IOException {

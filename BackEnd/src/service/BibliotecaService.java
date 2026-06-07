@@ -58,6 +58,20 @@ public class BibliotecaService {
     }
 
     public void cadastrarUsuario(Usuario usuario) throws SQLException {
+        validarUsuario(usuario);
+        repository.cadastrarUsuario(usuario);
+    }
+
+    public void atualizarUsuario(long id, Usuario usuario) throws SQLException {
+        validarUsuario(usuario);
+        repository.atualizarUsuario(id, usuario);
+    }
+
+    public void excluirUsuario(long id) throws SQLException {
+        repository.excluirUsuario(id);
+    }
+
+    private void validarUsuario(Usuario usuario) {
         if (usuario.getNome() == null || usuario.getNome().isBlank()) {
             throw new IllegalArgumentException("Nome do usuario e obrigatorio");
         }
@@ -68,12 +82,22 @@ public class BibliotecaService {
         if (usuario.getCPF() == null || usuario.getCPF().isBlank()) {
             throw new IllegalArgumentException("CPF do usuario e obrigatorio");
         }
-
-        repository.cadastrarUsuario(usuario);
     }
 
     public List<Usuario> listarUsuarios() throws SQLException {
         return repository.listarUsuarios();
+    }
+
+    public boolean autenticarAdministrador(String username, String password) throws SQLException {
+        if (username == null || username.isBlank()) {
+            return false;
+        }
+
+        if (password == null || password.isBlank()) {
+            return false;
+        }
+
+        return repository.autenticarAdministrador(username, password);
     }
 
     public void registrarEmprestimo(long usuarioId, long livroId) throws SQLException {

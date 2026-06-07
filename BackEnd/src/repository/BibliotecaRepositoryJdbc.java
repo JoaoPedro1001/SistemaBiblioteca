@@ -170,6 +170,97 @@ public class BibliotecaRepositoryJdbc implements BibliotecaRepository {
     }
 
     @Override
+    public void atualizarUsuario(long id, Usuario usuario) throws SQLException {
+        String sql = """
+            update usuarios
+            set nome = ?, email = ?, telefone = ?, CPF = ?
+            where id = ?
+            """;
+
+        try (Connection conexao = conexaoBanco.conectar();
+             PreparedStatement comando = conexao.prepareStatement(sql)) {
+
+            comando.setString(1, usuario.getNome());
+            comando.setString(2, usuario.getEmail());
+            comando.setString(3, usuario.getTelefone());
+            comando.setString(4, usuario.getCPF());
+            comando.setLong(5, id);
+
+            int linhasAlteradas = comando.executeUpdate();
+
+            if (linhasAlteradas == 0) {
+                throw new IllegalArgumentException("Usuario nao encontrado");
+            }
+        }
+    }
+
+    @Override
+    public void excluirUsuario(long id) throws SQLException {
+        String devolverEstoque = """
+            update livros
+            set quantidade = quantidade + emprestimos_ativos.total
+            from (
+                select livro_id, count(*) as total
+                from emprestimos
+                where usuario_id = ? and status = 'emprestado'
+                group by livro_id
+            ) emprestimos_ativos
+            where livros.id = emprestimos_ativos.livro_id
+            """;
+
+        String excluirEmprestimos = "delete from emprestimos where usuario_id = ?";
+        String excluirUsuario = "delete from usuarios where id = ?";
+
+        try (Connection conexao = conexaoBanco.conectar()) {
+            conexao.setAutoCommit(false);
+
+            try (PreparedStatement comandoEstoque = conexao.prepareStatement(devolverEstoque);
+                 PreparedStatement comandoEmprestimos = conexao.prepareStatement(excluirEmprestimos);
+                 PreparedStatement comandoUsuario = conexao.prepareStatement(excluirUsuario)) {
+
+                comandoEstoque.setLong(1, id);
+                comandoEstoque.executeUpdate();
+
+                comandoEmprestimos.setLong(1, id);
+                comandoEmprestimos.executeUpdate();
+
+                comandoUsuario.setLong(1, id);
+                int linhasAlteradas = comandoUsuario.executeUpdate();
+
+                if (linhasAlteradas == 0) {
+                    throw new IllegalArgumentException("Usuario nao encontrado");
+                }
+
+                conexao.commit();
+            } catch (SQLException | RuntimeException erro) {
+                conexao.rollback();
+                throw erro;
+            }
+        }
+    }
+
+    @Override
+    public boolean autenticarAdministrador(String username, String password) throws SQLException {
+        String sql = """
+            select 1
+            from admins
+            where username = ? and password = ?
+            limit 1
+            """;
+
+        try (Connection conexao = conexaoBanco.conectar();
+             PreparedStatement comando = conexao.prepareStatement(sql)) {
+
+            comando.setString(1, username);
+            comando.setString(2, password);
+
+            try (ResultSet resultado = comando.executeQuery()) {
+                return resultado.next();
+            }
+        }
+    }
+
+    @Override
     public void registrarEmprestimo(long usuarioId, long livroId) throws SQLException {
         String baixarQuantidade = """
             update livros
@@ -178,7 +269,7 @@ public class BibliotecaRepositoryJdbc implements BibliotecaRepository {
             """;
 
         String inserirEmprestimo = """
-            insert into emprestimos (usuario_id, livro_id, data_emprestimo, data_prevista_devolucao, status, multa)
+            insert into emprestimos (usuario_id, livro_id, data_emprestimo, data_prevista_devolucao, status, valor_devedor)
             values (?, ?, current_date, current_date + interval '14 days', 'emprestado', 0.0)
             """;
 
@@ -269,7 +360,7 @@ public class BibliotecaRepositoryJdbc implements BibliotecaRepository {
     @Override
     public List<Emprestimo> listarEmprestimos() throws SQLException {
         String sql = """
-            select id, usuario_id, livro_id, data_emprestimo, data_prevista_devolucao, data_devolucao, status, multa
+            select id, usuario_id, livro_id, data_emprestimo, data_prevista_devolucao, data_devolucao, status, valor_devedor as multa
             from emprestimos
             order by id
             """;
@@ -280,7 +371,7 @@ public class BibliotecaRepositoryJdbc implements BibliotecaRepository {
     @Override
     public List<Emprestimo> listarEmprestimosAtrasados() throws SQLException {
         String sql = """
-            select id, usuario_id, livro_id, data_emprestimo, data_prevista_devolucao, data_devolucao, status, multa
+            select id, usuario_id, livro_id, data_emprestimo, data_prevista_devolucao, data_devolucao, status, valor_devedor as multa
             from emprestimos
             where status = 'emprestado'
             and data_emprestimo < current_date - interval '7 days'

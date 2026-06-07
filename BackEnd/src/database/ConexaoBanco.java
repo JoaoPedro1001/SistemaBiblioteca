@@ -7,13 +7,20 @@ import java.sql.SQLException;
 public class ConexaoBanco {
 
     public Connection conectar() throws SQLException {
+        carregarDriver();
+
         String url = "jdbc:postgresql://banco:5432/meu_banco";
         String usuario = "usuario_banco";
         String senha = "senha_banco";
 
         return DriverManager.getConnection(url, usuario, senha);
-
-        
     }
-    
+
+    private void carregarDriver() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException erro) {
+            throw new SQLException("Driver PostgreSQL nao encontrado", erro);
+        }
+    }
 }
