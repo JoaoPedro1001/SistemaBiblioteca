@@ -6,21 +6,25 @@ import java.sql.SQLException;
 
 public class ConexaoBanco {
 
+    private static final String URL =
+            "jdbc:postgresql://aws-1-us-west-2.pooler.supabase.com:5432/postgres?sslmode=require";
+
+    private static final String USER =
+            "postgres.leusgxwjhicsogotpffz";
+
+    private static final String PASSWORD =
+            "Natan221287@";
+
     public Connection conectar() throws SQLException {
         carregarDriver();
-
-        String url = "jdbc:postgresql://banco:5432/meu_banco";
-        String usuario = "usuario_banco";
-        String senha = "senha_banco";
-
-        return DriverManager.getConnection(url, usuario, senha);
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
     private void carregarDriver() throws SQLException {
         try {
             Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException erro) {
-            throw new SQLException("Driver PostgreSQL nao encontrado", erro);
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("Driver PostgreSQL nao encontrado", e);
         }
     }
 }
