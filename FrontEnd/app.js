@@ -64,10 +64,14 @@ function cacheElements() {
   elements.loginSubmitButton = document.querySelector("#loginSubmitButton");
   elements.loginSubmitText = document.querySelector("#loginSubmitText");
   elements.passwordInput = document.querySelector("#passwordInput");
-  elements.togglePasswordButton = document.querySelector("#togglePasswordButton");
+  elements.togglePasswordButton = document.querySelector(
+    "#togglePasswordButton",
+  );
   elements.userMenuButton = document.querySelector("#userMenuButton");
   elements.userMenu = document.querySelector("#userMenu");
-  elements.registrationMenuButton = document.querySelector("#registrationMenuButton");
+  elements.registrationMenuButton = document.querySelector(
+    "#registrationMenuButton",
+  );
   elements.registrationMenu = document.querySelector("#registrationMenu");
   elements.adminEmail = document.querySelector("#adminEmail");
   elements.logoutButton = document.querySelector("#logoutButton");
@@ -111,7 +115,9 @@ function cacheElements() {
   elements.studentsSummary = document.querySelector("#studentsSummary");
   elements.studentSearchInput = document.querySelector("#studentSearchInput");
   elements.studentSortFilter = document.querySelector("#studentSortFilter");
-  elements.clearStudentFiltersButton = document.querySelector("#clearStudentFiltersButton");
+  elements.clearStudentFiltersButton = document.querySelector(
+    "#clearStudentFiltersButton",
+  );
   elements.bookForm = document.querySelector("#bookForm");
   elements.bookSubmitButton = document.querySelector("#bookSubmitButton");
   elements.clearBookForm = document.querySelector("#clearBookForm");
@@ -124,21 +130,35 @@ function cacheElements() {
   elements.confirmReturnButton = document.querySelector("#confirmReturnButton");
   elements.deleteBookModal = document.querySelector("#deleteBookModal");
   elements.deleteBookModalText = document.querySelector("#deleteBookModalText");
-  elements.cancelDeleteBookButton = document.querySelector("#cancelDeleteBookButton");
-  elements.confirmDeleteBookButton = document.querySelector("#confirmDeleteBookButton");
+  elements.cancelDeleteBookButton = document.querySelector(
+    "#cancelDeleteBookButton",
+  );
+  elements.confirmDeleteBookButton = document.querySelector(
+    "#confirmDeleteBookButton",
+  );
   elements.deleteUserModal = document.querySelector("#deleteUserModal");
   elements.deleteUserModalText = document.querySelector("#deleteUserModalText");
-  elements.cancelDeleteUserButton = document.querySelector("#cancelDeleteUserButton");
-  elements.confirmDeleteUserButton = document.querySelector("#confirmDeleteUserButton");
+  elements.cancelDeleteUserButton = document.querySelector(
+    "#cancelDeleteUserButton",
+  );
+  elements.confirmDeleteUserButton = document.querySelector(
+    "#confirmDeleteUserButton",
+  );
   elements.loadingScreen = document.querySelector("#loadingScreen");
   elements.toast = document.querySelector("#toast");
 }
 
 function bindEvents() {
   elements.loginForm.addEventListener("submit", handleLogin);
-  elements.togglePasswordButton.addEventListener("click", togglePasswordVisibility);
+  elements.togglePasswordButton.addEventListener(
+    "click",
+    togglePasswordVisibility,
+  );
   elements.userMenuButton.addEventListener("click", toggleUserMenu);
-  elements.registrationMenuButton.addEventListener("click", toggleRegistrationMenu);
+  elements.registrationMenuButton.addEventListener(
+    "click",
+    toggleRegistrationMenu,
+  );
   elements.logoutButton.addEventListener("click", logout);
 
   elements.searchInput.addEventListener("input", (event) => {
@@ -176,23 +196,37 @@ function bindEvents() {
     state.studentFilters.sort = event.target.value;
     renderStudentsTable();
   });
-  elements.clearStudentFiltersButton.addEventListener("click", clearStudentFilters);
+  elements.clearStudentFiltersButton.addEventListener(
+    "click",
+    clearStudentFilters,
+  );
   elements.bookForm.addEventListener("submit", handleBookSubmit);
   elements.clearBookForm.addEventListener("click", clearBookForm);
   elements.cancelModalButton.addEventListener("click", closeReturnModal);
   elements.confirmReturnButton.addEventListener("click", confirmReturnLoan);
-  elements.cancelDeleteBookButton.addEventListener("click", closeDeleteBookModal);
+  elements.cancelDeleteBookButton.addEventListener(
+    "click",
+    closeDeleteBookModal,
+  );
   elements.confirmDeleteBookButton.addEventListener("click", confirmDeleteBook);
-  elements.cancelDeleteUserButton.addEventListener("click", closeDeleteUserModal);
+  elements.cancelDeleteUserButton.addEventListener(
+    "click",
+    closeDeleteUserModal,
+  );
   elements.confirmDeleteUserButton.addEventListener("click", confirmDeleteUser);
   elements.catalogPagination.addEventListener("click", handlePaginationClick);
 
   document.querySelectorAll("[data-card-action]").forEach((card) => {
-    card.addEventListener("click", () => handleMetricAction(card.dataset.cardAction));
+    card.addEventListener("click", () =>
+      handleMetricAction(card.dataset.cardAction),
+    );
   });
 
   document.addEventListener("click", (event) => {
-    if (!elements.userMenuButton.contains(event.target) && !elements.userMenu.contains(event.target)) {
+    if (
+      !elements.userMenuButton.contains(event.target) &&
+      !elements.userMenu.contains(event.target)
+    ) {
       closeUserMenu();
     }
 
@@ -231,7 +265,9 @@ function bindEvents() {
         clearStudentForm();
       }
       closeUserMenu();
-      elements.registrationMenuButton.closest(".nav-dropdown").classList.remove("is-open");
+      elements.registrationMenuButton
+        .closest(".nav-dropdown")
+        .classList.remove("is-open");
       elements.registrationMenuButton.setAttribute("aria-expanded", "false");
     });
   });
@@ -335,10 +371,17 @@ function normalizeAdminLoginResponse(data, username) {
 
 function findMatchingAdmin(admins, username, password) {
   const usernames = adminUsernameCandidates(username).map(normalize);
-  return admins.find((admin) => {
-    const adminUsername = normalize(admin.username || admin.login || admin.email);
-    return usernames.includes(adminUsername) && String(admin.password || admin.senha || "") === password;
-  }) || null;
+  return (
+    admins.find((admin) => {
+      const adminUsername = normalize(
+        admin.username || admin.login || admin.email,
+      );
+      return (
+        usernames.includes(adminUsername) &&
+        String(admin.password || admin.senha || "") === password
+      );
+    }) || null
+  );
 }
 
 function adminUsernameCandidates(username) {
@@ -357,7 +400,11 @@ function setLoginError(message) {
 }
 
 function startLoginFeedback() {
-  const texts = ["Entrando no sistema.", "Entrando no sistema..", "Entrando no sistema..."];
+  const texts = [
+    "Entrando no sistema.",
+    "Entrando no sistema..",
+    "Entrando no sistema...",
+  ];
   let index = 0;
 
   elements.loginForm.classList.add("is-submitting");
@@ -382,7 +429,10 @@ function stopLoginFeedback() {
 function togglePasswordVisibility() {
   const isPassword = elements.passwordInput.type === "password";
   elements.passwordInput.type = isPassword ? "text" : "password";
-  elements.togglePasswordButton.setAttribute("aria-label", isPassword ? "Ocultar senha" : "Mostrar senha");
+  elements.togglePasswordButton.setAttribute(
+    "aria-label",
+    isPassword ? "Ocultar senha" : "Mostrar senha",
+  );
 }
 
 function toggleUserMenu() {
@@ -454,7 +504,11 @@ async function loadData() {
 }
 
 async function apiGet(path) {
-  const response = await fetchWithTimeout(buildApiUrl(path), {}, API_TIMEOUT_MS);
+  const response = await fetchWithTimeout(
+    buildApiUrl(path),
+    {},
+    API_TIMEOUT_MS,
+  );
   if (!response.ok) {
     throw new Error(`GET ${path} ${response.status}`);
   }
@@ -462,11 +516,15 @@ async function apiGet(path) {
 }
 
 async function apiSend(path, method, body) {
-  const response = await fetchWithTimeout(buildApiUrl(path), {
-    method,
-    headers: { "Content-Type": "application/json" },
-    body: body ? JSON.stringify(body) : undefined,
-  }, API_TIMEOUT_MS + 2200);
+  const response = await fetchWithTimeout(
+    buildApiUrl(path),
+    {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: body ? JSON.stringify(body) : undefined,
+    },
+    API_TIMEOUT_MS + 2200,
+  );
 
   if (!response.ok) {
     const text = await response.text();
@@ -528,7 +586,10 @@ function renderAll() {
 
 function renderMetrics() {
   const active = activeLoans();
-  const stockTotal = state.books.reduce((total, book) => total + Number(book.quantidade || 0), 0);
+  const stockTotal = state.books.reduce(
+    (total, book) => total + Number(book.quantidade || 0),
+    0,
+  );
   const totalCopies = stockTotal + active.length;
   const debtors = uniqueBy(overdueLoans(), (loan) => loan.usuarioId);
 
@@ -536,13 +597,20 @@ function renderMetrics() {
   elements.metricRentedBooks.textContent = active.length;
   elements.metricStockBooks.textContent = stockTotal;
   elements.metricDebtors.textContent = debtors.length;
-  elements.metricDebtorsHint.textContent = debtors.length ? "Ver pendências" : "Nenhuma pendência";
-  elements.debtMetricCard.classList.toggle("balance-danger", debtors.length > 0);
+  elements.metricDebtorsHint.textContent = debtors.length
+    ? "Ver pendências"
+    : "Nenhuma pendência";
+  elements.debtMetricCard.classList.toggle(
+    "balance-danger",
+    debtors.length > 0,
+  );
   elements.debtMetricCard.classList.toggle("balance-ok", debtors.length === 0);
 }
 
 function renderGenreControls() {
-  const genres = uniqueSorted(state.books.map((book) => book.genero).filter(Boolean));
+  const genres = uniqueSorted(
+    state.books.map((book) => book.genero).filter(Boolean),
+  );
   const selected = state.filters.genre;
 
   elements.genreFilter.innerHTML = `
@@ -558,7 +626,10 @@ function renderGenreControls() {
 
 function renderCatalog() {
   const books = filteredBooks();
-  const stock = books.reduce((total, book) => total + Number(book.quantidade || 0), 0);
+  const stock = books.reduce(
+    (total, book) => total + Number(book.quantidade || 0),
+    0,
+  );
   const totalPages = Math.max(1, Math.ceil(books.length / CATALOG_PAGE_SIZE));
   state.catalogPage = Math.min(Math.max(state.catalogPage, 1), totalPages);
   const start = (state.catalogPage - 1) * CATALOG_PAGE_SIZE;
@@ -590,7 +661,7 @@ function renderPagination(totalPages) {
           >
             ${page}
           </button>
-        `
+        `,
       )
       .join("")}
     <button type="button" data-page="next" ${state.catalogPage === totalPages ? "disabled" : ""}>Próximo</button>
@@ -614,7 +685,10 @@ function handlePaginationClick(event) {
   }
 
   renderCatalog();
-  elements.catalogSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  elements.catalogSection.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
 }
 
 function renderBookCard(book) {
@@ -650,7 +724,11 @@ function renderBookDetail(bookId) {
 
   const loans = state.loans
     .filter((loan) => loan.livroId === book.id)
-    .sort((a, b) => Number(isLoanActive(b)) - Number(isLoanActive(a)) || compareDates(b.dataEmprestimo, a.dataEmprestimo));
+    .sort(
+      (a, b) =>
+        Number(isLoanActive(b)) - Number(isLoanActive(a)) ||
+        compareDates(b.dataEmprestimo, a.dataEmprestimo),
+    );
   const active = loans.filter(isLoanActive);
   const activeRented = active.length;
   const totalCopies = Number(book.quantidade || 0) + activeRented;
@@ -791,8 +869,7 @@ function renderStudentsTable() {
   const users = filteredUsers();
   const debtors = users.filter((user) => getUserBalance(user.id) > 0).length;
 
-  elements.studentsSummary.textContent =
-    `${users.length} aluno(s) encontrados - ${debtors} com saldo devedor`;
+  elements.studentsSummary.textContent = `${users.length} aluno(s) encontrados - ${debtors} com saldo devedor`;
 
   if (!users.length) {
     elements.studentsTableWrap.innerHTML = `<p class="empty-state">Nenhum aluno encontrado.</p>`;
@@ -846,7 +923,12 @@ function renderStudentRow(user) {
 }
 
 function renderStatus(status) {
-  const className = status === "Atrasado" ? "unavailable" : status === "Emprestado" ? "neutral" : "available";
+  const className =
+    status === "Atrasado"
+      ? "unavailable"
+      : status === "Emprestado"
+        ? "neutral"
+        : "available";
   return `<span class="status-pill ${className}">${escapeHtml(status)}</span>`;
 }
 
@@ -873,7 +955,9 @@ function filteredBooks() {
   const status = state.filters.status;
 
   const books = state.books.filter((book) => {
-    const text = normalize(`${book.titulo} ${book.autor} ${book.genero} ${book.editora}`);
+    const text = normalize(
+      `${book.titulo} ${book.autor} ${book.genero} ${book.editora}`,
+    );
     const matchesSearch = !search || text.includes(search);
     const matchesGenre = !genre || book.genero === genre;
     const matchesStatus =
@@ -891,15 +975,24 @@ function filteredBooks() {
 function sortBooks(books) {
   return [...books].sort((a, b) => {
     if (state.filters.sort === "stock") {
-      return Number(b.quantidade || 0) - Number(a.quantidade || 0) || a.titulo.localeCompare(b.titulo);
+      return (
+        Number(b.quantidade || 0) - Number(a.quantidade || 0) ||
+        a.titulo.localeCompare(b.titulo)
+      );
     }
 
     if (state.filters.sort === "rented") {
-      return activeLoanCount(b.id) - activeLoanCount(a.id) || a.titulo.localeCompare(b.titulo);
+      return (
+        activeLoanCount(b.id) - activeLoanCount(a.id) ||
+        a.titulo.localeCompare(b.titulo)
+      );
     }
 
     if (state.filters.sort === "year") {
-      return Number(b.anoPublicacao || 0) - Number(a.anoPublicacao || 0) || a.titulo.localeCompare(b.titulo);
+      return (
+        Number(b.anoPublicacao || 0) - Number(a.anoPublicacao || 0) ||
+        a.titulo.localeCompare(b.titulo)
+      );
     }
 
     return a.titulo.localeCompare(b.titulo);
@@ -922,7 +1015,9 @@ function clearFilters() {
 function filteredUsers() {
   const search = normalize(state.studentFilters.search);
   const users = state.users.filter((user) => {
-    const text = normalize(`${user.nome} ${user.cpf} ${user.CPF} ${user.email} ${user.telefone}`);
+    const text = normalize(
+      `${user.nome} ${user.cpf} ${user.CPF} ${user.email} ${user.telefone}`,
+    );
     return !search || text.includes(search);
   });
 
@@ -936,7 +1031,10 @@ function sortUsers(users) {
     }
 
     if (state.studentFilters.sort === "balance") {
-      return getUserBalance(b.id) - getUserBalance(a.id) || a.nome.localeCompare(b.nome);
+      return (
+        getUserBalance(b.id) - getUserBalance(a.id) ||
+        a.nome.localeCompare(b.nome)
+      );
     }
 
     return a.nome.localeCompare(b.nome);
@@ -974,7 +1072,11 @@ async function handleStudentSubmit(event) {
   } catch (error) {
     upsertLocalUser({ id, ...payload });
     setApiStatus(false);
-    showToast(id ? "Aluno atualizado nos dados locais." : "Aluno cadastrado nos dados locais.");
+    showToast(
+      id
+        ? "Aluno atualizado nos dados locais."
+        : "Aluno cadastrado nos dados locais.",
+    );
     renderAll();
   }
 
@@ -1005,11 +1107,14 @@ async function handleBookSubmit(event) {
     }
     await loadData();
   } catch (error) {
+    console.error(error);
     upsertLocalBook({ id, ...payload });
     setApiStatus(false);
-    showToast(id ? "Livro atualizado nos dados locais." : "Livro cadastrado nos dados locais.");
+    showToast("Erro na API — usando modo local.");
     renderAll();
   }
+
+  clearBookForm();
 
   const returnHash = id ? state.bookEditReturnHash || `#livro-${id}` : "#home";
   clearBookForm();
@@ -1054,7 +1159,8 @@ function prepareUserEdit(userId) {
   elements.studentForm.elements.CPF.value = user.cpf || user.CPF || "";
   elements.studentForm.elements.telefone.value = user.telefone || "";
   elements.studentFormTitle.textContent = "Editar aluno";
-  elements.studentFormSubtitle.textContent = "Atualize os dados cadastrais do aluno.";
+  elements.studentFormSubtitle.textContent =
+    "Atualize os dados cadastrais do aluno.";
   elements.studentSubmitButton.textContent = "Atualizar aluno";
   location.hash = "#cadastro-aluno";
 }
@@ -1063,7 +1169,8 @@ function clearStudentForm() {
   elements.studentForm.reset();
   elements.studentForm.elements.id.value = "";
   elements.studentFormTitle.textContent = "Cadastrar aluno";
-  elements.studentFormSubtitle.textContent = "Registre os dados do aluno para liberar operações no acervo.";
+  elements.studentFormSubtitle.textContent =
+    "Registre os dados do aluno para liberar operações no acervo.";
   elements.studentSubmitButton.textContent = "Cadastrar aluno";
 }
 
@@ -1074,8 +1181,7 @@ function openReturnModal(loanId) {
   const user = findUser(loan.usuarioId);
   const book = findBook(loan.livroId);
   state.selectedLoanId = loan.id;
-  elements.confirmModalText.textContent =
-    `Confirme se "${book.titulo}" foi devolvido por ${user.nome}. A multa será encerrada no sistema.`;
+  elements.confirmModalText.textContent = `Confirme se "${book.titulo}" foi devolvido por ${user.nome}. A multa será encerrada no sistema.`;
   elements.confirmModal.classList.remove("is-hidden");
 }
 
@@ -1089,8 +1195,7 @@ function openDeleteBookModal(bookId) {
   if (!book.id) return;
 
   state.selectedBookId = book.id;
-  elements.deleteBookModalText.textContent =
-    `Tem certeza que deseja excluir "${book.titulo}" do acervo?`;
+  elements.deleteBookModalText.textContent = `Tem certeza que deseja excluir "${book.titulo}" do acervo?`;
   elements.deleteBookModal.classList.remove("is-hidden");
 }
 
@@ -1104,8 +1209,7 @@ function openDeleteUserModal(userId) {
   if (!user.id) return;
 
   state.selectedUserId = user.id;
-  elements.deleteUserModalText.textContent =
-    `Tem certeza que deseja excluir "${user.nome}" do sistema? Empréstimos vinculados a este aluno também serão removidos.`;
+  elements.deleteUserModalText.textContent = `Tem certeza que deseja excluir "${user.nome}" do sistema? Empréstimos vinculados a este aluno também serão removidos.`;
   elements.deleteUserModal.classList.remove("is-hidden");
 }
 
@@ -1269,7 +1373,9 @@ function route() {
 }
 
 function showView(name) {
-  Object.values(elements.views).forEach((view) => view.classList.add("is-hidden"));
+  Object.values(elements.views).forEach((view) =>
+    view.classList.add("is-hidden"),
+  );
   elements.views[name].classList.remove("is-hidden");
 }
 
@@ -1278,14 +1384,18 @@ function setActiveMenu(hash) {
     const href = link.getAttribute("href");
     const active =
       href === hash ||
-      (href === "#home" && (hash === "#catalogo" || hash.startsWith("#livro-")));
+      (href === "#home" &&
+        (hash === "#catalogo" || hash.startsWith("#livro-")));
     link.classList.toggle("is-active", active);
   });
 }
 
 function scrollToCatalog() {
   requestAnimationFrame(() => {
-    elements.catalogSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    elements.catalogSection.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   });
 }
 
@@ -1303,7 +1413,10 @@ function overdueLoans() {
 }
 
 function isLoanActive(loan) {
-  return normalize(loan.status || "emprestado") === "emprestado" && !loan.dataDevolucao;
+  return (
+    normalize(loan.status || "emprestado") === "emprestado" &&
+    !loan.dataDevolucao
+  );
 }
 
 function activeLoanCount(bookId) {
@@ -1311,7 +1424,8 @@ function activeLoanCount(bookId) {
 }
 
 function userActiveLoanCount(userId) {
-  return activeLoans().filter((loan) => loan.usuarioId === Number(userId)).length;
+  return activeLoans().filter((loan) => loan.usuarioId === Number(userId))
+    .length;
 }
 
 function getUserBalance(userId) {
@@ -1344,7 +1458,9 @@ function findUser(userId) {
 }
 
 function getDueDate(loan) {
-  return loan.dataPrevistaDevolucao || addDaysIso(loan.dataEmprestimo, LOAN_DAYS);
+  return (
+    loan.dataPrevistaDevolucao || addDaysIso(loan.dataEmprestimo, LOAN_DAYS)
+  );
 }
 
 function getDaysWithBook(loan) {
@@ -1369,7 +1485,9 @@ function getLoanFine(loan) {
 function normalizeBook(raw) {
   return {
     id: Number(raw.id || raw.livroId || nextId(state.books)),
-    titulo: String(raw.titulo || raw.tituloLivro || raw.titulo_livro || "Sem título").trim(),
+    titulo: String(
+      raw.titulo || raw.tituloLivro || raw.titulo_livro || "Sem título",
+    ).trim(),
     autor: String(raw.autor || raw.nomeAutor || raw.nome_autor || "").trim(),
     editora: String(raw.editora || "").trim(),
     quantidade: Number(raw.quantidade || 0),
@@ -1397,12 +1515,17 @@ function normalizeLoan(raw) {
     id: Number(raw.id || nextId(state.loans)),
     usuarioId: Number(raw.usuarioId || raw.usuario_id || raw.userId || 0),
     livroId: Number(raw.livroId || raw.livro_id || raw.bookId || 0),
-    dataEmprestimo: normalizeDate(raw.dataEmprestimo || raw.data_emprestimo) || todayIso(),
+    dataEmprestimo:
+      normalizeDate(raw.dataEmprestimo || raw.data_emprestimo) || todayIso(),
     dataPrevistaDevolucao: normalizeDate(
-      raw.dataPrevistaDevolucao || raw.data_prevista_devolucao || raw.dataPrevista
+      raw.dataPrevistaDevolucao ||
+        raw.data_prevista_devolucao ||
+        raw.dataPrevista,
     ),
     dataDevolucao: normalizeDate(raw.dataDevolucao || raw.data_devolucao),
-    status: String(raw.status || "emprestado").trim().toLowerCase(),
+    status: String(raw.status || "emprestado")
+      .trim()
+      .toLowerCase(),
     multa: raw.multa ?? raw.valorDevedor ?? raw.valor_devedor ?? null,
   };
 }
@@ -1410,7 +1533,8 @@ function normalizeLoan(raw) {
 function upsertLocalUser(raw) {
   const user = normalizeUser({ id: raw.id || nextId(state.users), ...raw });
   const existingIndex = state.users.findIndex(
-    (item) => item.id === user.id || normalize(item.email) === normalize(user.email)
+    (item) =>
+      item.id === user.id || normalize(item.email) === normalize(user.email),
   );
 
   if (existingIndex >= 0) {
@@ -1454,37 +1578,129 @@ function removeLocalUser(userId) {
 
 function createDemoBooks() {
   return [
-    { id: 1, titulo: "Dom Casmurro", autor: "Machado de Assis", editora: "Editora Brasil", quantidade: 3, anoPublicacao: 1899, genero: "Romance" },
-    { id: 2, titulo: "1984", autor: "George Orwell", editora: "Companhia das Letras", quantidade: 5, anoPublicacao: 1949, genero: "Distopia" },
-    { id: 3, titulo: "Harry Potter e a Pedra Filosofal", autor: "J. K. Rowling", editora: "Rocco", quantidade: 4, anoPublicacao: 1997, genero: "Fantasia" },
-    { id: 4, titulo: "Sapiens", autor: "Yuval Noah Harari", editora: "Objetiva", quantidade: 2, anoPublicacao: 2011, genero: "História" },
-    { id: 5, titulo: "A Hora da Estrela", autor: "Clarice Lispector", editora: "Rocco", quantidade: 1, anoPublicacao: 1977, genero: "Ficção" },
+    {
+      id: 1,
+      titulo: "Dom Casmurro",
+      autor: "Machado de Assis",
+      editora: "Editora Brasil",
+      quantidade: 3,
+      anoPublicacao: 1899,
+      genero: "Romance",
+    },
+    {
+      id: 2,
+      titulo: "1984",
+      autor: "George Orwell",
+      editora: "Companhia das Letras",
+      quantidade: 5,
+      anoPublicacao: 1949,
+      genero: "Distopia",
+    },
+    {
+      id: 3,
+      titulo: "Harry Potter e a Pedra Filosofal",
+      autor: "J. K. Rowling",
+      editora: "Rocco",
+      quantidade: 4,
+      anoPublicacao: 1997,
+      genero: "Fantasia",
+    },
+    {
+      id: 4,
+      titulo: "Sapiens",
+      autor: "Yuval Noah Harari",
+      editora: "Objetiva",
+      quantidade: 2,
+      anoPublicacao: 2011,
+      genero: "História",
+    },
+    {
+      id: 5,
+      titulo: "A Hora da Estrela",
+      autor: "Clarice Lispector",
+      editora: "Rocco",
+      quantidade: 1,
+      anoPublicacao: 1977,
+      genero: "Ficção",
+    },
   ];
 }
 
 function createDemoUsers() {
   return [
-    { id: 1, nome: "Ana Silva", email: "ana.silva@example.com", telefone: "11987654321", CPF: "20560053606" },
-    { id: 2, nome: "Carlos Souza", email: "carlos.souza@example.com", telefone: "21998765432", CPF: "40206301600" },
-    { id: 3, nome: "Mariana Lima", email: "mariana.lima@example.com", telefone: "31976543210", CPF: "27157562324" },
+    {
+      id: 1,
+      nome: "Ana Silva",
+      email: "ana.silva@example.com",
+      telefone: "11987654321",
+      CPF: "20560053606",
+    },
+    {
+      id: 2,
+      nome: "Carlos Souza",
+      email: "carlos.souza@example.com",
+      telefone: "21998765432",
+      CPF: "40206301600",
+    },
+    {
+      id: 3,
+      nome: "Mariana Lima",
+      email: "mariana.lima@example.com",
+      telefone: "31976543210",
+      CPF: "27157562324",
+    },
   ];
 }
 
 function createDemoLoans() {
   const loans = [
-    { id: 1, usuarioId: 1, livroId: 1, dataEmprestimo: "2026-06-01", dataPrevistaDevolucao: "2026-06-08", status: "emprestado", multa: 0 },
-    { id: 2, usuarioId: 2, livroId: 2, dataEmprestimo: "2026-05-28", dataPrevistaDevolucao: "2026-06-04", dataDevolucao: "2026-06-04", status: "devolvido", multa: 0 },
-    { id: 3, usuarioId: 3, livroId: 3, dataEmprestimo: "2026-06-02", dataPrevistaDevolucao: "2026-06-09", status: "emprestado", multa: 0 },
-    { id: 4, usuarioId: 1, livroId: 4, dataEmprestimo: "2026-05-20", dataPrevistaDevolucao: "2026-05-27", dataDevolucao: "2026-05-27", status: "devolvido", multa: 0 },
+    {
+      id: 1,
+      usuarioId: 1,
+      livroId: 1,
+      dataEmprestimo: "2026-06-01",
+      dataPrevistaDevolucao: "2026-06-08",
+      status: "emprestado",
+      multa: 0,
+    },
+    {
+      id: 2,
+      usuarioId: 2,
+      livroId: 2,
+      dataEmprestimo: "2026-05-28",
+      dataPrevistaDevolucao: "2026-06-04",
+      dataDevolucao: "2026-06-04",
+      status: "devolvido",
+      multa: 0,
+    },
+    {
+      id: 3,
+      usuarioId: 3,
+      livroId: 3,
+      dataEmprestimo: "2026-06-02",
+      dataPrevistaDevolucao: "2026-06-09",
+      status: "emprestado",
+      multa: 0,
+    },
+    {
+      id: 4,
+      usuarioId: 1,
+      livroId: 4,
+      dataEmprestimo: "2026-05-20",
+      dataPrevistaDevolucao: "2026-05-27",
+      dataDevolucao: "2026-05-27",
+      status: "devolvido",
+      multa: 0,
+    },
   ];
 
-  return loans.map((loan) =>
-    normalizeLoan(loan)
-  );
+  return loans.map((loan) => normalizeLoan(loan));
 }
 
 function nextId(items) {
-  return items.reduce((max, item) => Math.max(max, Number(item.id || 0)), 0) + 1;
+  return (
+    items.reduce((max, item) => Math.max(max, Number(item.id || 0)), 0) + 1
+  );
 }
 
 function uniqueSorted(values) {

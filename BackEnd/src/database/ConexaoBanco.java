@@ -6,14 +6,9 @@ import java.sql.SQLException;
 
 public class ConexaoBanco {
 
-    private static final String URL =
-            "jdbc:postgresql://aws-1-us-west-2.pooler.supabase.com:5432/postgres?sslmode=require";
-
-    private static final String USER =
-            "postgres.leusgxwjhicsogotpffz";
-
-    private static final String PASSWORD =
-            "Natan221287@";
+    private static final String URL = System.getenv("JDBC_DATABASE_URL");
+    private static final String USER = System.getenv("DB_USER");
+    private static final String PASSWORD = System.getenv("DB_PASSWORD");
 
     public Connection conectar() throws SQLException {
         carregarDriver();

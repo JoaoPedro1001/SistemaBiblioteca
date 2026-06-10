@@ -23,7 +23,7 @@ public class BibliotecaHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             if (exchange.getRequestMethod().equals("OPTIONS")) {
-                responder(exchange, 204, "");
+                responder(exchange, 200, "{\"ok\":true}");
                 return;
             }
 
@@ -176,6 +176,12 @@ public class BibliotecaHandler implements HttpHandler {
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
+
+        if (status == 204) {
+            exchange.sendResponseHeaders(status, -1);
+            exchange.close();
+            return;
+        }
 
         exchange.sendResponseHeaders(status, bytes.length);
         exchange.getResponseBody().write(bytes);

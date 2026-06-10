@@ -38,7 +38,8 @@ public class BibliotecaRepositoryJdbc implements BibliotecaRepository {
             comando.setInt(5, livro.getAnoPublicacao());
             comando.setString(6, livro.getGenero());
 
-            comando.executeUpdate();
+            int rowsn= comando.executeUpdate();
+            System.out.println("INSERT LIVROS -> " + rowsn);
         }
     }
 
@@ -83,7 +84,8 @@ public class BibliotecaRepositoryJdbc implements BibliotecaRepository {
             comando.setString(6, livro.getGenero());
             comando.setLong(7, id);
 
-            comando.executeUpdate();
+            int rows = comando.executeUpdate();
+            System.out.println("UPDATE LIVROS ROWS = " + rows);
         }
     }
 
