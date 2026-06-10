@@ -2,6 +2,8 @@ services:
   banco:
     image: postgres:15-alpine
     container_name: meu_banco_local
+    profiles:
+      - local-db
     environment:
       POSTGRES_USER: usuario_banco
       POSTGRES_PASSWORD: senha_banco
@@ -26,9 +28,6 @@ services:
       - .env
     ports:
       - "8080:8080"
-    depends_on:
-      banco:
-        condition: service_healthy
     volumes:
       - ./BackEnd:/app
     develop:

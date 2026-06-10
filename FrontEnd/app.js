@@ -1,16 +1,18 @@
-const API_DEFAULT = "http://localhost:8080/api";
+const API_DEFAULT = location.port === "" || location.port === "80"
+  ? "/api"
+  : "http://localhost:8080/api";
 const CATALOG_PAGE_SIZE = 12;
-const API_TIMEOUT_MS = 1800;
+const API_TIMEOUT_MS = 15000;
+const LOGIN_TIMEOUT_MS = 9000;
 const STORAGE = {
   admin: "bibliotecaAdminSession",
-  api: "bibliotecaApiUrl",
 };
 const DAY_MS = 24 * 60 * 60 * 1000;
 const LOAN_DAYS = 14;
 const DAILY_FINE = 2;
 
 const state = {
-  apiBase: localStorage.getItem(STORAGE.api) || API_DEFAULT,
+  apiBase: API_DEFAULT,
   apiOnline: false,
   admin: null,
   books: [],
@@ -32,6 +34,8 @@ const state = {
   selectedUserId: null,
   bookEditReturnHash: null,
   loginFeedbackTimer: null,
+  savingBook: false,
+  savingUser: false,
 };
 
 const elements = {};
@@ -43,14 +47,12 @@ function init() {
   bindEvents();
   setTodayLabel();
 
-  state.admin = readJson(STORAGE.admin, null);
-  if (state.admin?.validated) {
-    showApp();
-    loadData();
-  } else {
-    localStorage.removeItem(STORAGE.admin);
-    state.admin = null;
-    showLogin();
+  localStorage.removeItem(STORAGE.admin);
+  state.admin = null;
+  showLogin();
+
+  if (location.hash !== "#login") {
+    location.hash = "#login";
   }
 
   route();
@@ -268,7 +270,6 @@ async function handleLogin(event) {
       validated: true,
     };
 
-    localStorage.setItem(STORAGE.admin, JSON.stringify(state.admin));
     if (elements.adminEmail) {
       elements.adminEmail.textContent = state.admin.username;
     }
@@ -314,7 +315,7 @@ async function authenticateAdmin(username, password) {
 
 async function requestLoginJson(path, options = {}) {
   try {
-    const response = await fetchWithTimeout(buildApiUrl(path), options, 1200);
+    const response = await fetchWithTimeout(buildApiUrl(path), options, LOGIN_TIMEOUT_MS);
     if (!response.ok) {
       return null;
     }
@@ -825,7 +826,7 @@ function renderStudentRow(user) {
 
   return `
     <tr>
-      <td><strong>${escapeHtml(user.nome)}</strong><small>ID ${user.id}</small></td>
+      <td><strong>${escapeHtml(user.nome)}</strong></td>
       <td>${escapeHtml(formatCpf(user.cpf))}</td>
       <td>${escapeHtml(user.email || "Não informado")}</td>
       <td>${escapeHtml(user.telefone || "Não informado")}</td>
@@ -953,6 +954,11 @@ function clearStudentFilters() {
 
 async function handleStudentSubmit(event) {
   event.preventDefault();
+
+  if (state.savingUser) {
+    return;
+  }
+
   const formData = new FormData(elements.studentForm);
   const id = Number(formData.get("id"));
   const payload = {
@@ -961,6 +967,9 @@ async function handleStudentSubmit(event) {
     telefone: String(formData.get("telefone") || "").trim(),
     CPF: String(formData.get("CPF") || "").trim(),
   };
+
+  state.savingUser = true;
+  elements.studentSubmitButton.disabled = true;
 
   try {
     if (id) {
@@ -980,10 +989,17 @@ async function handleStudentSubmit(event) {
 
   clearStudentForm();
   location.hash = "#alunos";
+  state.savingUser = false;
+  elements.studentSubmitButton.disabled = false;
 }
 
 async function handleBookSubmit(event) {
   event.preventDefault();
+
+  if (state.savingBook) {
+    return;
+  }
+
   const formData = new FormData(elements.bookForm);
   const id = Number(formData.get("id"));
   const payload = {
@@ -994,6 +1010,9 @@ async function handleBookSubmit(event) {
     anoPublicacao: Number(formData.get("anoPublicacao") || 0),
     genero: String(formData.get("genero") || "").trim(),
   };
+
+  state.savingBook = true;
+  elements.bookSubmitButton.disabled = true;
 
   try {
     if (id) {
@@ -1011,14 +1030,21 @@ async function handleBookSubmit(event) {
     renderAll();
   }
 
-  const returnHash = id ? state.bookEditReturnHash || `#livro-${id}` : "#home";
+  if (!id) {
+    focusCatalogOnBook(payload.titulo);
+  }
+
+  const returnHash = id ? state.bookEditReturnHash || `#livro-${id}` : "#catalogo";
   clearBookForm();
   state.bookEditReturnHash = null;
 
   location.hash = returnHash;
-  if (!id) {
+  if (!id && location.hash === "#catalogo") {
     scrollToCatalog();
   }
+
+  state.savingBook = false;
+  elements.bookSubmitButton.disabled = false;
 }
 
 function prepareBookEdit(bookId) {
@@ -1042,6 +1068,20 @@ function clearBookForm() {
   elements.bookForm.elements.id.value = "";
   elements.bookSubmitButton.textContent = "Salvar livro";
   state.bookEditReturnHash = null;
+}
+
+function focusCatalogOnBook(title) {
+  state.filters.search = title;
+  state.filters.genre = "";
+  state.filters.status = "";
+  state.filters.sort = "title";
+  state.catalogPage = 1;
+
+  elements.searchInput.value = title;
+  elements.genreFilter.value = "";
+  elements.availabilityFilter.value = "";
+  elements.sortFilter.value = "title";
+  renderCatalog();
 }
 
 function prepareUserEdit(userId) {
@@ -1581,15 +1621,6 @@ function dateToIso(date) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
-}
-
-function readJson(key, fallback) {
-  try {
-    const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : fallback;
-  } catch (error) {
-    return fallback;
-  }
 }
 
 function escapeHtml(value) {

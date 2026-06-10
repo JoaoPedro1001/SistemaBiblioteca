@@ -6,18 +6,24 @@ import java.sql.SQLException;
 
 public class ConexaoBanco {
 
-    private static final String URL =
-            "jdbc:postgresql://aws-1-us-west-2.pooler.supabase.com:5432/postgres?sslmode=require";
-
-    private static final String USER =
-            "postgres.leusgxwjhicsogotpffz";
-
-    private static final String PASSWORD =
-            "Natan221287@";
-
     public Connection conectar() throws SQLException {
         carregarDriver();
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+
+        String url = obterEnvObrigatoria("JDBC_DATABASE_URL");
+        String usuario = obterEnvObrigatoria("DB_USER");
+        String senha = obterEnvObrigatoria("DB_PASSWORD");
+
+        return DriverManager.getConnection(url, usuario, senha);
+    }
+
+    private String obterEnvObrigatoria(String nome) throws SQLException {
+        String valor = System.getenv(nome);
+
+        if (valor == null || valor.isBlank()) {
+            throw new SQLException("Variavel de ambiente obrigatoria nao definida: " + nome);
+        }
+
+        return valor;
     }
 
     private void carregarDriver() throws SQLException {
