@@ -177,6 +177,12 @@ public class BibliotecaHandler implements HttpHandler {
         exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
 
+        if (status == 204) {
+            exchange.sendResponseHeaders(status, -1);
+            exchange.close();
+            return;
+        }
+
         exchange.sendResponseHeaders(status, bytes.length);
         exchange.getResponseBody().write(bytes);
         exchange.close();
